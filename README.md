@@ -237,3 +237,9 @@ $
 We <strong>strongly</strong> encourage the entire class to work together to create a suite of checks covering both regular tests and edge cases for each task. See task <code>8. Test suite</code>.</p>
 
   </div>
+
+## Contributors
+
+<a href="https://github.com/KM8Oz/simple_shell/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=KM8Oz/simple_shell" />
+</a>
