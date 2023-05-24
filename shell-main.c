@@ -1,11 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <string.h>
-
-#define BUFFER_SIZE 1024
+#include "main.h"
 
 /**
  * find_command_path - a function that takes a command as input,
@@ -16,15 +9,15 @@
  * Return: void.
  */
 
-char *find_command_path(char buffer[BUFFER_SIZE])
+char *find_command_path(char *buffer)
 {
-	char *path = getenv("PATH");
-	char *copy_path = strdup(path);
+	char *path = _getenv("PATH");
+	char *copy_path = _strdup(path);
 	char *token;
 	char *cmd = strtok(buffer, " ");
 	char full_path[BUFFER_SIZE];
 
-	if (strchr(buffer, '/') != NULL)
+	if (_strchr(buffer, '/') != NULL)
 		return (cmd);
 	token = strtok(copy_path, ":");
 	while (token != NULL)
@@ -32,7 +25,7 @@ char *find_command_path(char buffer[BUFFER_SIZE])
 		snprintf(full_path, sizeof(full_path), "%s/%s", token, cmd);
 		if (access(full_path, X_OK) == 0)
 		{
-			return (strdup(full_path));
+			return (_strdup(full_path));
 		}
 		token = strtok(NULL, ":");
 	}
@@ -41,88 +34,71 @@ char *find_command_path(char buffer[BUFFER_SIZE])
 }
 
 /**
- * get_last_directory_name - get last directory name
- * @path: ...
- * Return: void.
- */
-
-char *get_last_directory_name(const char *path)
-{
-	char *token;
-	char *lastDirName = NULL;
-	char pathCopy[BUFFER_SIZE];
-
-	strcpy(pathCopy, path);
-	token = strtok(pathCopy, "/");
-
-	while (token != NULL)
-	{
-		lastDirName = token;
-		token = strtok(NULL, "/");
-	}
-
-	return (lastDirName);
-}
-
-/**
  * change_directory - change current directory.
  * @path: ...
- * Return: void.
+ * Return: int.
  */
 
-void change_directory(char *path)
+int change_directory(char *path)
 {
 	char *dir = path;
-	char *HOME = getenv("HOME");
+	char *HOME = _getenv("HOME");
 	size_t len;
 
-	if (dir == NULL || *dir == '~')
+	if (dir == ((void *)0) || *dir == '~')
 		dir = HOME;
-	len = strlen(dir);
+	len = _strlen(dir);
 	if (len > 0 && dir[len - 1] == '\n')
 		dir[len - 1] = '\0';
-	if (chdir(dir) != 0)
-	{
-		perror("chdir");
-	}
+	if (chdir(dir) != 0 || _setenv("PWD", dir, 1) == -1)
+		return (-1);
+	return (0);
 }
 
 /**
  * run - constract comand from buffer and execute it,
- * @pid: ...
  * @buffer: ...
+ * @history: ...
  * Return: void.
  */
 
-void run(pid_t pid, char buffer[BUFFER_SIZE])
+void run(char *buffer, CommandHistory *history)
 {
-	int i, status;
-	char *args[64];
-	char *cmds[64];
+	int i, status = 0;
+	char *cmds[64] = {NULL};
+	pid_t pid;
 
-	if (pid == 0)
+	cmds[0] = strtok(buffer, " ");
+	pid = fork();
+	if (pid == -1)
 	{
-		cmds[0] = strtok(buffer, " ");
-		for (i = 1; i < 64; i++)
-		{
-			cmds[i] = strtok(NULL, " ");
-			args[i] = cmds[i];
-			if (cmds[i] == NULL)
-				break;
-		}
-		if (strcmp(cmds[0], "cd") == 0)
-		{
-			change_directory(cmds[1]);
-			exit(EXIT_SUCCESS);
-		}
-		cmds[0] = find_command_path(buffer);
-		execve(cmds[0], cmds, NULL);
-		perror("execve");
+		perror("fork");
 		exit(EXIT_FAILURE);
 	}
 	else
 	{
-		wait(&status);
+		if (pid == 0)
+		{
+			for (i = 1; i < 64; i++)
+			{
+				cmds[i] = strtok(NULL, " ");
+				if (cmds[i] == NULL)
+					break;
+			}
+			if (switch_builtin_command(cmds) == 0)
+			{
+				return;
+			}
+			add_to_history(history, cmds[0]);
+			cmds[0] = find_command_path(buffer);
+			execve(cmds[0], cmds, NULL);
+			perror("execve");
+			exit(EXIT_FAILURE);
+		}
+		else
+		{
+			wait(&status);
+		}
 	}
 }
 
@@ -133,33 +109,33 @@ void run(pid_t pid, char buffer[BUFFER_SIZE])
 
 int main(void)
 {
-	char buffer[BUFFER_SIZE];
 	char current_directory[BUFFER_SIZE];
-	size_t len;
-	pid_t pid;
+
+	char *lineptr = NULL;
+	size_t len = 0;
+	ssize_t read;
+	size_t n = 64;
+	CommandHistory *history = create_history();
 
 	while (1)
 	{
 		getcwd(current_directory, sizeof(current_directory));
-		printf("%s($) ", get_last_directory_name(current_directory));
+		_putstr(_getenv("USER"));
+		_putstr("@");
+		_putstr(getLastDirectory(current_directory));
+		_putstr("$ ");
 		fflush(stdout);
-		if (fgets(buffer, BUFFER_SIZE, stdin) == NULL)
+		lineptr = (char *)malloc(n);
+		read = getline(&lineptr, &n, stdin);
+		if (read == -1)
 			break;
-		len = strlen(buffer);
-		if (len > 0 && buffer[len - 1] == '\n')
-			buffer[len - 1] = '\0';
-		if (strcmp(buffer, "exit") == 0)
+		len = _strlen(lineptr);
+		if (len > 0 && lineptr[len - 1] == '\n')
+			lineptr[len - 1] = '\0';
+		if (_strncmp(lineptr, "exit", 5UL) == 0)
 			break;
-		pid = fork();
-		if (pid == -1)
-		{
-			perror("fork");
-			exit(EXIT_FAILURE);
-		}
-		else
-		{
-			run(pid, buffer);
-		}
+		run(lineptr, history);
+		free(lineptr);
 	}
 
 	return (EXIT_SUCCESS);
