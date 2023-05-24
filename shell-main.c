@@ -6,7 +6,7 @@
 #include <string.h>
 
 #define BUFFER_SIZE 1024
-char current_directory[BUFFER_SIZE];
+
 /**
  * find_command_path - a function that takes a command as input,
  * searches for the command in the directories specified in the
@@ -50,8 +50,8 @@ char *get_last_directory_name(const char *path)
 {
 	char *token;
 	char *lastDirName = NULL;
-
 	char pathCopy[BUFFER_SIZE];
+
 	strcpy(pathCopy, path);
 	token = strtok(pathCopy, "/");
 
@@ -84,10 +84,6 @@ void change_directory(char *path)
 	if (chdir(dir) != 0)
 	{
 		perror("chdir");
-	}
-	else
-	{
-		getcwd(current_directory, sizeof(current_directory));
 	}
 }
 
@@ -127,7 +123,6 @@ void run(pid_t pid, char buffer[BUFFER_SIZE])
 	else
 	{
 		wait(&status);
-		getcwd(current_directory, sizeof(current_directory));
 	}
 }
 
@@ -139,6 +134,7 @@ void run(pid_t pid, char buffer[BUFFER_SIZE])
 int main(void)
 {
 	char buffer[BUFFER_SIZE];
+	char current_directory[BUFFER_SIZE];
 	size_t len;
 	pid_t pid;
 
