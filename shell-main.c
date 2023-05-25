@@ -11,7 +11,7 @@
 
 char *find_command_path(char *buffer)
 {
-	char *path = _getenv("PATH");
+	char *path = _getenv0("PATH");
 	char *copy_path = _strdup(path);
 	char *token;
 	char *cmd = strtok(buffer, " ");
@@ -42,7 +42,7 @@ char *find_command_path(char *buffer)
 int change_directory(char *path)
 {
 	char *dir = path;
-	char *HOME = _getenv("HOME");
+	char *HOME = _getenv0("HOME");
 	size_t len;
 
 	if (dir == ((void *)0) || *dir == '~')
@@ -50,7 +50,7 @@ int change_directory(char *path)
 	len = _strlen(dir);
 	if (len > 0 && dir[len - 1] == '\n')
 		dir[len - 1] = '\0';
-	if (chdir(dir) != 0 || _setenv("PWD", dir, 1) == -1)
+	if (chdir(dir) != 0 || _setenv("PWD", dir) == -1)
 		return (-1);
 	return (0);
 }
@@ -120,7 +120,7 @@ int main(void)
 	while (1)
 	{
 		getcwd(current_directory, sizeof(current_directory));
-		_putstr(_getenv("USER"));
+		_putstr(_getenv0("USER"));
 		_putstr("@");
 		_putstr(getLastDirectory(current_directory));
 		_putstr("$ ");

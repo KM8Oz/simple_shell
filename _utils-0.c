@@ -39,12 +39,12 @@ int _strncmp(const char *str1, const char *str2, size_t n)
 }
 
 /**
- * _getenv - _getenv clone
+ * _getenv0 - _getenv clone
  * @name: char's pointers
  * Return:...
  */
 
-char *_getenv(const char *name)
+char *_getenv0(const char *name)
 {
 	char **env;
 	size_t nameLength;

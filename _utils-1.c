@@ -55,51 +55,6 @@ char *_strrealloc(char *ptr, size_t size)
 	return (new_ptr);
 }
 
-/**
- * _setenv - set an environment variable
- * @name: The name of the environment variable
- * @value: The value to set
- * @overwrite: Flag indicating whether to overwrite
- *  the variable if it already exists
- * Return: 0 on success, -1 on failure
- */
-int _setenv(const char *name, const char *value, int overwrite)
-{
-	size_t name_len = _strlen(name);
-	size_t value_len = _strlen(value);
-	char *existing_value = _getenv(name);
-	int result;
-	char *env_entry;
-
-	if (name == NULL || value == NULL)
-		return (-1);
-	if (existing_value != NULL)
-	{
-		if (!overwrite)
-			return (0);
-		env_entry = _strdup(name);
-		env_entry = _strrealloc(env_entry, name_len + 1 + value_len + 1);
-		if (env_entry == NULL)
-			return (-1);
-		env_entry[name_len] = '=';
-		_strcpy(env_entry + name_len + 1, value);
-		result = putenv(env_entry);
-		if (result != 0)
-			return (-1);
-		return (0);
-	}
-	env_entry = _strdup(name);
-	env_entry = _strrealloc(env_entry, name_len + 1 + value_len + 1);
-	if (env_entry == NULL)
-		return (-1);
-	env_entry[name_len] = '=';
-	_strcpy(env_entry + name_len + 1, value);
-	result = putenv(env_entry);
-	if (result != 0)
-		return (-1);
-
-	return (0);
-}
 
 /**
  * getLastDirectory - Retrieve the last directory from
@@ -115,7 +70,7 @@ char *getLastDirectory(const char *path)
 {
 	char *lastDir;
 	char *token;
-	char *user = _getenv("USER");
+	char *user = _getenv0("USER");
 
 	lastDir = NULL;
 	token = strtok((char *)path, "/");
