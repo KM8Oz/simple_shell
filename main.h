@@ -10,6 +10,7 @@
 #include <stdio.h>    /* fflush, perror */
 #include <dirent.h>   /* closedir, opendir, readdir */
 #include <sys/stat.h> /* stat, lstat, fstat */
+#include <sys/wait.h> /* wait */
 #include <string.h>   /* strtok */
 #define BUFFER_SIZE 1024
 #define MAX_TOKENS 100
