@@ -28,6 +28,8 @@ int switch_builtin_command(char *cmds[64])
 		return (change_directory(cmds[1]));
 	if (_strncmp(cmds[0], "clear", 6UL) == 0)
 		return (clear_screen());
+	if (_strncmp(cmds[0], "env", 6UL) == 0)
+		return (print_environment());
 	if (_strncmp(cmds[0], "exit", 6UL) == 0 || _strncmp(cmds[0], "^C", 3UL) == 0)
 		exit(0);
 	return (-1);
@@ -68,4 +70,23 @@ void handle_exec(int ac, char **av, CommandHistory *history)
 		run(lineptr, history);
 		free(lineptr);
 	}
+}
+
+/**
+ * print_environment - function that prints the environment
+ * variables.
+ * Return: void.
+ */
+
+int print_environment()
+{
+	char **env = environ;
+
+	while (*env != NULL)
+	{
+		_putstr(*env);
+		_putstr("\n");
+		env++;
+	}
+	return (0);
 }

@@ -76,6 +76,7 @@ char *_strchr(const char *str, int character);
 char *_strdup(const char *str);
 char *find_command_path(char *buffer);
 int change_directory(char *path);
+int print_environment();
 void run(char *buffer, CommandHistory *history);
 
 #endif /*MAIN_H*/
