@@ -60,6 +60,7 @@ void print_history(const CommandHistory *history);
 void clear_history(CommandHistory *history);
 void add_to_history(CommandHistory *history, const char *command);
 int _strlen(const char *f);
+void handle_exec(int ac, char **av, CommandHistory *history);
 int _putchar(char c);
 int clear_screen(void);
 int switch_builtin_command(char *cmds[64]);

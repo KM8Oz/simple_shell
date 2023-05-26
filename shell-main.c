@@ -89,7 +89,7 @@ void run(char *buffer, CommandHistory *history)
 				return;
 			add_to_history(history, cmds[0]);
 			cmds[0] = find_command_path(buffer);
-			execve(cmds[0], cmds, NULL);
+			execve(cmds[0], cmds, environ);
 			perror("execve");
 			exit(EXIT_FAILURE);
 		}
@@ -102,10 +102,12 @@ void run(char *buffer, CommandHistory *history)
 
 /**
  * main - simple shell
- * Return: int.
+ * @ac: arg count.
+ * @av: arg array.
+ * Return: int()status.
  */
 
-int main(void)
+int main(int ac, char **av)
 {
 	char current_directory[BUFFER_SIZE];
 
@@ -122,13 +124,13 @@ int main(void)
 		user = _getenv0("HOSTNAME");
 	else
 		user = "root";
+	(void)user;
+	clear_screen();
+	handle_exec(ac, av, history);
 	while (1)
 	{
 		getcwd(current_directory, sizeof(current_directory));
-		_putstr(user);
-		_putstr("@");
-		_putstr(getLastDirectory(current_directory));
-		_putstr("$ ");
+		_putstr("#cisfun$ ");
 		fflush(stdout);
 		lineptr = (char *)malloc(n);
 		read = getline(&lineptr, &n, stdin);

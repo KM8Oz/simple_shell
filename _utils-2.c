@@ -32,3 +32,40 @@ int switch_builtin_command(char *cmds[64])
 		exit(0);
 	return (-1);
 }
+
+/**
+ * handle_exec - find if args and exec the comand.
+ * @ac: args count
+ * @av: args values
+ * @history: passed linked list
+ * Return: void.
+ */
+
+void handle_exec(int ac, char **av, CommandHistory *history)
+{
+	size_t total_length = 0;
+	int i, j, n = 0;
+	char *lineptr;
+
+	if (ac > 0 && av != NULL)
+	{
+		for (i = 1; i < ac; i++)
+			total_length += strlen(av[i]) + 1;
+		lineptr = (char *)malloc(total_length);
+		for (i = 1; i < ac; i++)
+		{
+			j = 0;
+			while (av[i][j] != '\0')
+			{
+				lineptr[n] = av[i][j];
+				n++;
+				j++;
+			}
+			lineptr[n] = ' ';
+			n++;
+		}
+		lineptr[n - 1] = '\0';
+		run(lineptr, history);
+		free(lineptr);
+	}
+}
