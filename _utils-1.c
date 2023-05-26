@@ -1,6 +1,5 @@
 #include "main.h"
 
-
 /**
  * _strrealloc - resize the memory block of a string
  * @ptr: pointer to the memory block to be resized
@@ -34,7 +33,6 @@ char *_strrealloc(char *ptr, size_t size)
 	return (new_ptr);
 }
 
-
 /**
  * getLastDirectory - Retrieve the last directory from
  *  a given path.
@@ -49,7 +47,14 @@ char *getLastDirectory(const char *path)
 {
 	char *lastDir;
 	char *token;
-	char *user = _getenv0("USER");
+	char *user = NULL;
+
+	if (_getenv0("USER"))
+		user = _getenv0("USER");
+	else if (_getenv0("HOSTNAME"))
+		user = _getenv0("HOSTNAME");
+	else
+		user = "root";
 
 	lastDir = NULL;
 	token = strtok((char *)path, "/");

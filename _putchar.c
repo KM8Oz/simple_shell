@@ -44,6 +44,8 @@ int _putstr(char *c)
 {
 	int i = 0;
 
+	if (c == NULL)
+		return (0UL);
 	while (*(c + i))
 	{
 		_putchar(*(c + i));

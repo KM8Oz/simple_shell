@@ -86,9 +86,7 @@ void run(char *buffer, CommandHistory *history)
 					break;
 			}
 			if (switch_builtin_command(cmds) == 0)
-			{
 				return;
-			}
 			add_to_history(history, cmds[0]);
 			cmds[0] = find_command_path(buffer);
 			execve(cmds[0], cmds, NULL);
@@ -112,15 +110,22 @@ int main(void)
 	char current_directory[BUFFER_SIZE];
 
 	char *lineptr = NULL;
+	char *user = NULL;
 	size_t len = 0;
 	ssize_t read;
 	size_t n = 64;
 	CommandHistory *history = create_history();
 
+	if (_getenv0("USER"))
+		user = _getenv0("USER");
+	else if (_getenv0("HOSTNAME"))
+		user = _getenv0("HOSTNAME");
+	else
+		user = "root";
 	while (1)
 	{
 		getcwd(current_directory, sizeof(current_directory));
-		_putstr(_getenv0("USER"));
+		_putstr(user);
 		_putstr("@");
 		_putstr(getLastDirectory(current_directory));
 		_putstr("$ ");

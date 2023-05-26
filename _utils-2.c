@@ -28,5 +28,7 @@ int switch_builtin_command(char *cmds[64])
 		return (change_directory(cmds[1]));
 	if (_strncmp(cmds[0], "clear", 6UL) == 0)
 		return (clear_screen());
+	if (_strncmp(cmds[0], "exit", 6UL) == 0 || _strncmp(cmds[0], "^C", 3UL) == 0)
+		exit(0);
 	return (-1);
 }
