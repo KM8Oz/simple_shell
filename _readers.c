@@ -52,7 +52,7 @@ ssize_t input_buf(CMD *cmd, char **buf, size_t *len)
 ssize_t get_input(CMD *cmd)
 {
 	static char *buf; /* the ';' command chain buffer */
-	static size_t i, j, len;
+	static size_t k, j, len;
 	ssize_t r = 0;
 	char **buf_p = &(cmd->arg), *p;
 
@@ -62,10 +62,10 @@ ssize_t get_input(CMD *cmd)
 		return (-1);
 	if (len)	/* we have commands left in the chain buffer */
 	{
-		j = i; /* init new iterator to current buf position */
-		p = buf + i; /* get pointer for return */
+		j = k; /* init new iterator to current buf position */
+		p = buf + k; /* get pointer for return */
 
-		check_chain(cmd, buf, &j, i, len);
+		check_chain(cmd, buf, &j, k, len);
 		while (j < len) /* iterate to semicolon or end */
 		{
 			if (is_chain(cmd, buf, &j))
@@ -73,10 +73,10 @@ ssize_t get_input(CMD *cmd)
 			j++;
 		}
 
-		i = j + 1; /* increment past nulled ';'' */
-		if (i >= len) /* reached end of buffer? */
+		k = j + 1; /* increment past nulled ';'' */
+		if (k >= len) /* reached end of buffer? */
 		{
-			i = len = 0; /* reset position and length */
+			k = len = 0; /* reset position and length */
 			cmd->cmd_buf_type = CMD_NORM;
 		}
 
