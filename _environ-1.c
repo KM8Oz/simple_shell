@@ -31,7 +31,7 @@ char **_get_environ(CMD *cmd)
 int _unsetenv0(CMD *cmd, char *var)
 {
 	list_t *node = cmd->env;
-	size_t i = 0;
+	size_t k = 0;
 	char *p;
 
 	if (!node || !var)
@@ -42,13 +42,13 @@ int _unsetenv0(CMD *cmd, char *var)
 		p = starts_with(node->str, var);
 		if (p && *p == '=')
 		{
-			cmd->env_changed = delete_node_at_index(&(cmd->env), i);
-			i = 0;
+			cmd->env_changed = delete_node_at_index(&(cmd->env), k);
+			k = 0;
 			node = cmd->env;
 			continue;
 		}
 		node = node->next;
-		i++;
+		k++;
 	}
 	return (cmd->env_changed);
 }
