@@ -1,0 +1,16 @@
+{
+    "C_Cpp.errorSquiggles": "disabled",
+    "files.associations": {
+        "*.js": "javascriptreact",
+        "*.rs": "rust",
+        ".env": "bat",
+        "*.proto": "python",
+        "*.in": "rust",
+        "__hash_table": "c",
+        "__string": "c",
+        "locale": "c",
+        "algorithm": "c",
+        "functional": "c",
+        "utility": "c"
+    }
+}
