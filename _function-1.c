@@ -47,7 +47,7 @@ int loop(CMD *cmd, char **av)
  * _fpath - finds this cmd in the PATH string
  * @cmd: the info struct
  * @pathstr: the PATH string
- * @cmd: the cmd to find
+ * @ptf: the cmd to find
  *
  * Return: full path of cmd if found or NULL
  */
@@ -145,26 +145,4 @@ int _builtin(CMD *cmd)
 		}
 	}
 	return (built_in_ret);
-}
-
-/**
- * is_cmd - determines if a file is an executable command
- * @info: the info struct
- * @path: path to the file
- *
- * Return: 1 if true, 0 otherwise
- */
-int is_cmd(CMD *cmd, char *path)
-{
-	struct stat st;
-
-	(void)cmd;
-	if (!path || stat(path, &st))
-		return (0);
-
-	if (st.st_mode & S_IFREG)
-	{
-		return (1);
-	}
-	return (0);
 }

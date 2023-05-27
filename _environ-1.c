@@ -20,7 +20,7 @@ char **_get_environ(CMD *cmd)
 }
 
 /**
- * _unsetenv - Removes an environment variable.
+ * _unsetenv0 - Removes an environment variable.
  * @cmd: Pointer to the CMD structure.
  * @var: The name of the environment variable
  * to remove.
@@ -54,7 +54,7 @@ int _unsetenv0(CMD *cmd, char *var)
 }
 
 /**
- * _setenv - Initializes a new environment variable
+ * _setenv0 - Initializes a new environment variable
  * or modifies an existing one.
  * @cmd: Pointer to the CMD structure.
  * @var: The name of the environment variable.
