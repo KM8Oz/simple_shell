@@ -46,20 +46,20 @@ int switch_builtin_command(char *cmds[64])
 void handle_exec(int ac, char **av, CommandHistory *history)
 {
 	size_t total_length = 0;
-	int i, j, n = 0;
+	int k, j, n = 0;
 	char *lineptr;
 
 	if (ac > 0 && av != NULL)
 	{
-		for (i = 1; i < ac; i++)
-			total_length += strlen(av[i]) + 1;
+		for (k = 1; k < ac; k++)
+			total_length += strlen(av[k]) + 1;
 		lineptr = (char *)malloc(total_length);
-		for (i = 1; i < ac; i++)
+		for (k = 1; k < ac; k++)
 		{
 			j = 0;
-			while (av[i][j] != '\0')
+			while (av[k][j] != '\0')
 			{
-				lineptr[n] = av[i][j];
+				lineptr[n] = av[k][j];
 				n++;
 				j++;
 			}
